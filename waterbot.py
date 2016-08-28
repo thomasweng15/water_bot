@@ -1,8 +1,8 @@
 # Must run as root on rpi
 
 from datetime import datetime
+from twilio_client import TwilioClient
 import RPi.GPIO as GPIO
-import twilio.rest as twilio
 import time
 import json
 import sys
@@ -12,37 +12,18 @@ OUTPUT_PIN = 17
 CONFIG = "config.json"
 PRIVATE_CONFIG = "private_config.json"
 
-class Twilio:
-	def __init__(self, account_sid, auth_token):
-		self.client = twilio.TwilioRestClient(
-			account_sid,
-			auth_token
-		)
-
-	def send(self, to, from_, body):
-		message = self.client.messages.create(
-			to = to,
-			from_ = from_,
-			body = body
-		)
-
-		print datetime.now().time()
-		print "to:" + to
-		print "from:" + from_ 
-		print "body:" + body
-
 class WaterBot:
 	def __init__(self, output_pin, config, private_config):
 		self.config = self._get_config(config);
 		self.private_config = self._get_private_config(private_config);
-		self.tw_client = Twilio(
+		self.tw_client = TwilioClient(
 			self.config["account_sid"], 
 			self.private_config["auth_token"]
 		)		
 		self._init_gpio(output_pin)
 
 	def water(self):
-		self._gpio_out()
+#		self._gpio_out()
 		self._send_text()
 
 	def cleanup(self):
@@ -54,14 +35,11 @@ class WaterBot:
 		GPIO.output(OUTPUT_PIN, False)
 
 	def _send_text(self):
-		try:
-			self.tw_client.send(
-				self.private_config["receive_number"],
-				self.private_config["send_number"],
-				self.config["msg_body"]
-			)
-		except twilio.exceptions.TwilioRestException as e:
-			print e
+		self.tw_client.send(
+			self.private_config["receive_number"],
+			self.private_config["send_number"],
+			self.config["msg_body"]
+		)
 
 	def _get_config(self, config):
 		with open(config, "r") as f:
