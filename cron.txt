@@ -1,4 +1,4 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-30 8 * * * sudo /usr/bin/python /home/pi/projects/plants/waterbot.py "/home/pi/projects/plant/config.json" "/home/pi/projects/plant/private_config.json" >> /home/pi/projects/plants/log.txt 2>&1
+30 8 * * * sudo /usr/bin/python /home/pi/projects/plants/waterbot.py "/home/pi/projects/plants/config.json" "/home/pi/projects/plants/private_config.json" >> /home/pi/projects/plants/log.txt 2>&1
